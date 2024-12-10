@@ -14,8 +14,7 @@ func showMenu() {
 }
 
 func main() {
-	ended := false
-	for !ended {
+	for {
 		showMenu()
 
 		var option int
