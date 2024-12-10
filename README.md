@@ -1,5 +1,7 @@
 # Project Guide
 
+- This is a CLI project in Go to verify availability of websites.
+
 ## Prerequisites
 
 - Go 1.16 or higher
