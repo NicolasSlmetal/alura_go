@@ -30,6 +30,7 @@ func main() {
 			monitor()
 		case 2:
 			fmt.Println("Showing logs...")
+			showLogs()
 		case 3:
 			fmt.Println("Exiting...")
 			os.Exit(0)
@@ -40,11 +41,26 @@ func main() {
 }
 
 func monitor() {
-	websites := readSitesFromFile()
+	websites := readLinesFromFile("sites.txt")
+	if websites == nil {
+		websites, _ = createSitesFile()
+	}
 	for _, website := range websites {
 		monitorSite(website)
 		time.Sleep(5 * time.Second)
 	}
+}
+
+func showLogs() {
+	logs := readLinesFromFile("log.txt")
+	if logs == nil {
+		fmt.Println("No logs to show")
+		return
+	}
+	for _, log := range logs {
+		fmt.Println(log)
+	}
+	time.Sleep(5 * time.Second)
 }
 
 func monitorSite(website string) {
@@ -56,23 +72,20 @@ func monitorSite(website string) {
 	}
 	if resp.StatusCode == 200 {
 		fmt.Println(website, "is online")
+		registerLog(website + " was online at that time")
 	} else {
 		fmt.Println(website, "is offline")
 		fmt.Println("Status code:", resp.StatusCode)
+		registerLog(website + " was offline at that time")
 	}
 }
 
-func readSitesFromFile() []string {
+func readLinesFromFile(fileName string) []string {
 	var sites []string
 
-	file, err := os.Open("sites.txt")
-	if err != os.ErrNotExist {
-		sites, err = createSitesFile()
-		if err != nil {
-			fmt.Println("Error:", err)
-			return nil
-		}
-		return sites
+	file, err := os.Open(fileName)
+	if err == os.ErrNotExist {
+		return nil
 	}
 	defer file.Close()
 	reader := bufio.NewReader(file)
@@ -109,6 +122,18 @@ func createSitesFile() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	registerLog("Default sites file created")
 	return defaultSites, nil
+}
+
+func registerLog(logMessage string) {
+	log := "[" + time.Now().Local().Format(time.DateTime) + "] - " + logMessage
+
+	file, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	defer file.Close()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	file.WriteString(log + "\n")
 }
