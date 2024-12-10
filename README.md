@@ -11,20 +11,14 @@
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/alura_go.git
+    git clone https://github.com/NicolasSlmetal/alura_go.git
     cd yourproject
     ```
-
-2. Install dependencies:
-    ```sh
-    go mod tidy
-    ```
-
 ## Running the Project
 
 1. Build the project:
     ```sh
-    go build -o yourproject
+    go build -o alura_go
     ```
 
 2. Run the executable:
