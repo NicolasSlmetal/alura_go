@@ -39,13 +39,17 @@ func main() {
 func monitor() {
 	websites := []string{"http://youtube.com.br", "http://www.google.com", "http://www.facebook.com"}
 	for _, website := range websites {
-		resp, _ := http.Get(website)
-		if resp.StatusCode == 200 {
-			fmt.Println(website, "is online")
-		} else {
-			fmt.Println(website, "is offline")
-			fmt.Println("Status code:", resp.StatusCode)
-		}
+		monitorSite(website)
 		time.Sleep(5 * time.Second)
+	}
+}
+
+func monitorSite(website string) {
+	resp, _ := http.Get(website)
+	if resp.StatusCode == 200 {
+		fmt.Println(website, "is online")
+	} else {
+		fmt.Println(website, "is offline")
+		fmt.Println("Status code:", resp.StatusCode)
 	}
 }
